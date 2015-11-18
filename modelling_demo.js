@@ -16,7 +16,7 @@ var modelView;
 matrixStack = [];
 
 var x = 0;
-var y = -2;
+var y = 0;
 var z = 0;
 
 function pushMatrix()
@@ -125,7 +125,7 @@ function draw_scene()
     
     
     //estam
-    multTranslation([x,y,z]);
+    multTranslation([0,-2,0]);
     //multRotX(radians(270));
     
     pushMatrix();
@@ -137,7 +137,7 @@ function draw_scene()
     
     //base do carro
     pushMatrix();
-        multTranslation([0, 1, 2.2]);
+        multTranslation([x, 1, 2.2+z]);
     
         multScale([0.7,0.15,0.5]);
 
@@ -145,22 +145,23 @@ function draw_scene()
     popMatrix();
     
     pushMatrix();
-                multTranslation([0,1.15,2.2]);
+                multTranslation([0+x,1.15,2.2+z]);
                 multScale([0.3,0.13,0.3]);
                 draw_cylinder([0.0, 1.0, 0.0]);
     popMatrix();
     
     
-  /*  pushMatrix();
+    pushMatrix();
     
-        multRotY((20));//roda
+        multRotY((0));//roda
     
         pushMatrix();
-            multTranslation([-2.0 , 0 , 0.0]);
-            draw_sphere([1.0, 0.0, 0.0]);
+            multTranslation([x , 1.71, 2.2+z]);
+            multScale([0.15,1,0.15]);
+            draw_cube([1.0, 0.0, 0.0]);
         popMatrix();
     
-        pushMatrix();
+        /*pushMatrix();
             pushMatrix();
                 multTranslation([0,1.25,2.2]);
                 multScale([0.5,1,0.5]);
@@ -168,8 +169,8 @@ function draw_scene()
             popMatrix();
         popMatrix();
     
-    
-    popMatrix();*/
+    */
+    popMatrix();
 }
 
 function render() {
@@ -191,14 +192,25 @@ function render() {
 
 function press(event) {
     
-
-    if (event.which == 37){  //seta esquerda
-        x-=0.1;
-        draw_scene();
-    }
-    
-    if (event.which == 39){  //seta direita
-        alert("direita");
+    //0.7 = metade do tamanho do lado da base
+    switch(event.which){
+        case 37:
+            if(x>-0.7)
+                x-=0.1;
+        break;
+        case 38:
+            if(z>-0.7)
+                z-=0.1;
+        break;    
+        case 39:
+            if(x<0.7)
+                x+=0.1;
+        break;
+        case 40:
+            if(z<0.7)
+                z+=0.1;
+        break;
+        default:break;
     }
 }
 
