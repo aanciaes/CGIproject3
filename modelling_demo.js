@@ -19,6 +19,9 @@ var x = 0;
 var y = 0;
 var z = 0;
 
+var theta=0;
+var alpha=0;
+
 function pushMatrix()
 {
     matrixStack.push(mat4(modelView[0], modelView[1], modelView[2], modelView[3]));
@@ -137,7 +140,7 @@ function draw_scene()
     
     //base do carro
     pushMatrix();
-        multTranslation([x, 1, 2.2+z]);
+        multTranslation([x, 1, 2.2]);
     
         multScale([0.7,0.15,0.5]);
 
@@ -145,42 +148,53 @@ function draw_scene()
     popMatrix();
     
     pushMatrix();
-                multTranslation([0+x,1.15,2.2+z]);
+                multTranslation([0+x,1.15,2.2]);
                 multScale([0.3,0.13,0.3]);
+                multRotY(theta);
                 draw_cylinder([0.0, 1.0, 0.0]);
     popMatrix();
     
     
-   // pushMatrix();
-    
-        //multRotY((45));//roda
-    
-        pushMatrix();
-            multTranslation([x , 1.71, 2.2+z]);
-            multScale([0.15,1,0.15]);
-            multRotY((20));
-            draw_cube([1.0, 0.0, 0.0]);
-        popMatrix();
     
     pushMatrix();
-            multTranslation([0+x,2.21,2.2+z]);
+        multTranslation([x , 1.71, 2.2]);
+        multScale([0.15,1,0.15]);
+        multRotY((theta));
+        draw_cube([1.0, 0.0, 0.0]);
+    popMatrix();
+    
+    pushMatrix();
+            multTranslation([x,2.21,2.2]);
             multScale([0.2,0.2,0.2]);
-            multRotY((20));            
-            multRotX((90));
+            multRotY(theta);
+            multRotZ(alpha);
+            multRotX(-90);
             draw_cylinder([0.0, 1.0, 0.0]);
     popMatrix();
     
+    pushMatrix();
+        multTranslation([x,2.21,2.2]);
+        multRotY(theta); 
+        multRotX(-90);
+        multRotY(alpha);
+             
+        
+    pushMatrix();
+            
     
-        /*pushMatrix();
-            pushMatrix();
-                multTranslation([0,1.25,2.2]);
-                multScale([0.5,1,0.5]);
-                draw_cylinder([0.0, 1.0, 0.0]);
-            popMatrix();
-        popMatrix();
+            multScale([0.1,0.1,0.5]);
     
-    */
-    //popMatrix();
+            multTranslation([0,0,-0.5]);
+            draw_cube([1.0, 0.0, 0.0]);
+    
+   
+    popMatrix();
+    
+            multTranslation([0,0,-0.5+y]);
+            multScale([0.05,0.05,0.5]);
+            draw_cube([1.0, 0.0, 0.0]);        
+    
+    popMatrix();
 }
 
 function render() {
@@ -209,17 +223,27 @@ function press(event) {
                 x-=0.1;
         break;
         case 38:
-            if(z>-0.7)
-                z-=0.1;
+            alpha--;
         break;    
         case 39:
             if(x<0.7)
                 x+=0.1;
         break;
         case 40:
-            if(z<0.7)
-                z+=0.1;
+            alpha++;
         break;
+        case 79:
+            y+=0.005;
+        break; 
+        case 80:
+            y-=0.005;
+        break;    
+        case 81:
+            theta++;
+        break;
+        case 87:
+            theta--;
+        break;    
         default:break;
     }
 }
