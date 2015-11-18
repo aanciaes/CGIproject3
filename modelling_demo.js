@@ -151,15 +151,25 @@ function draw_scene()
     popMatrix();
     
     
-    pushMatrix();
+   // pushMatrix();
     
-        multRotY((0));//roda
+        //multRotY((45));//roda
     
         pushMatrix();
             multTranslation([x , 1.71, 2.2+z]);
             multScale([0.15,1,0.15]);
+            multRotY((20));
             draw_cube([1.0, 0.0, 0.0]);
         popMatrix();
+    
+    pushMatrix();
+            multTranslation([0+x,2.21,2.2+z]);
+            multScale([0.2,0.2,0.2]);
+            multRotY((20));            
+            multRotX((90));
+            draw_cylinder([0.0, 1.0, 0.0]);
+    popMatrix();
+    
     
         /*pushMatrix();
             pushMatrix();
@@ -170,7 +180,7 @@ function draw_scene()
         popMatrix();
     
     */
-    popMatrix();
+    //popMatrix();
 }
 
 function render() {
