@@ -15,6 +15,10 @@ var modelView;
 
 matrixStack = [];
 
+var x = 0;
+var y = -2;
+var z = 0;
+
 function pushMatrix()
 {
     matrixStack.push(mat4(modelView[0], modelView[1], modelView[2], modelView[3]));
@@ -53,6 +57,8 @@ function initialize() {
     gl.viewport(0,0,canvas.width, canvas.height);
     gl.enable(gl.DEPTH_TEST);
     
+    
+    
     program = initShaders(gl, "vertex-shader-2", "fragment-shader-2");
     
     cubeInit(gl);
@@ -61,6 +67,7 @@ function initialize() {
     
     setupProjection();
     setupView();
+    
 }
 
 function setupProjection() {
@@ -113,27 +120,56 @@ function draw_cylinder(color)
 function draw_scene()
 {
     
-    var d = (new Date()).getTime();
+    //var d = (new Date()).getTime();
+    var d = 1;
     
-    multTranslation([0,Math.sin(d/500),0]);
+    
+    //estam
+    multTranslation([x,y,z]);
+    //multRotX(radians(270));
+    
     pushMatrix();
-        multTranslation([0,1,0]);
-        multRotZ(d/5);
-        draw_cube([0,0,1]);
+        multTranslation([0,0,0.55]);
+        multScale([3.5,0.5,3.5]);
+        draw_cube([1,1,1]);
     popMatrix();
+    
+    
+    //base do carro
     pushMatrix();
-        multRotY((d/100));
+        multTranslation([0, 1, 2.2]);
+    
+        multScale([0.7,0.15,0.5]);
+
+        draw_cube([1,0,0]);
+    popMatrix();
+    
+    pushMatrix();
+                multTranslation([0,1.15,2.2]);
+                multScale([0.3,0.13,0.3]);
+                draw_cylinder([0.0, 1.0, 0.0]);
+    popMatrix();
+    
+    
+  /*  pushMatrix();
+    
+        multRotY((20));//roda
+    
         pushMatrix();
-            multTranslation([-2.0,0, 0.0]);
+            multTranslation([-2.0 , 0 , 0.0]);
             draw_sphere([1.0, 0.0, 0.0]);
         popMatrix();
+    
         pushMatrix();
             pushMatrix();
-                multTranslation([2,0,0]);
+                multTranslation([0,1.25,2.2]);
+                multScale([0.5,1,0.5]);
                 draw_cylinder([0.0, 1.0, 0.0]);
             popMatrix();
         popMatrix();
-    popMatrix();
+    
+    
+    popMatrix();*/
 }
 
 function render() {
@@ -153,13 +189,33 @@ function render() {
 }
 
 
+function press(event) {
+    
+
+    if (event.which == 37){  //seta esquerda
+        x-=0.1;
+        draw_scene();
+    }
+    
+    if (event.which == 39){  //seta direita
+        alert("direita");
+    }
+}
+
+
 window.onload = function init()
 {
     canvas = document.getElementById("gl-canvas");
     gl = WebGLUtils.setupWebGL(canvas);
     if(!gl) { alert("WebGL isn't available"); }
     
+    
     initialize();
-            
+    
+    
+  // alert("ola");
+    
     render();
+    onkeydown = press;
+
 }
