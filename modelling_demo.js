@@ -138,9 +138,31 @@ function draw_scene()
     popMatrix();
     
     
+     pushMatrix();
+                multTranslation([0.2 + x,1,2.25]);
+                multScale([0.15,0.15,0.45]);
+                multRotX(90);
+                multRotZ(x);
+                draw_cylinder([2.0, 2.0, 0.0]);
+    popMatrix();
+    
+     pushMatrix();
+                multTranslation([-0.2 + x,1,2.25]);
+                multScale([0.15,0.15,0.45]);
+                multRotX(90);
+                multRotZ(x);
+                draw_cylinder([2.0, 2.0, 0.0]);
+    popMatrix();
+    
+    
+    
+    
+    
+    
+    
     //base do carro
     pushMatrix();
-        multTranslation([x, 1, 2.2]);
+        multTranslation([x, 1.1, 2.2]);
     
         multScale([0.7,0.15,0.5]);
 
@@ -148,7 +170,7 @@ function draw_scene()
     popMatrix();
     
     pushMatrix();
-                multTranslation([0+x,1.15,2.2]);
+                multTranslation([x,1.25,2.2]);
                 multScale([0.3,0.13,0.3]);
                 multRotY(theta);
                 draw_cylinder([0.0, 1.0, 0.0]);
@@ -157,14 +179,14 @@ function draw_scene()
     
     
     pushMatrix();
-        multTranslation([x , 1.71, 2.2]);
+        multTranslation([x , 1.81, 2.2]);
         multScale([0.15,1,0.15]);
         multRotY((theta));
         draw_cube([1.0, 0.0, 0.0]);
     popMatrix();
     
     pushMatrix();
-            multTranslation([x,2.21,2.2]);
+            multTranslation([x,2.31,2.2]);
             multScale([0.2,0.2,0.2]);
             multRotY(theta);
             multRotZ(alpha);
@@ -173,7 +195,7 @@ function draw_scene()
     popMatrix();
     
     pushMatrix();
-        multTranslation([x,2.21,2.2]);
+        multTranslation([x,2.31,2.2]);
         multRotY(theta); 
         multRotX(-90);
         multRotY(alpha);
@@ -182,8 +204,7 @@ function draw_scene()
     pushMatrix();
             
     
-            multScale([0.1,0.1,0.5]);
-    
+            multScale([0.1,0.1,0.5]);    
             multTranslation([0,0,-0.5]);
             draw_cube([1.0, 0.0, 0.0]);
     
@@ -219,28 +240,39 @@ function press(event) {
     //0.7 = metade do tamanho do lado da base
     switch(event.which){
         case 37:
+            //tecla esquerda
             if(x>-0.7)
-                x-=0.1;
+                x-=0.05;
         break;
         case 38:
+            //tecla cima
+            if(alpha>-120)
             alpha--;
         break;    
         case 39:
+            //tecla direita
             if(x<0.7)
-                x+=0.1;
+                x+=0.05;
         break;
         case 40:
+            //tecla baixo
+            if(alpha<120)
             alpha++;
         break;
         case 79:
-            y+=0.005;
+            //o
+            if(y<0.25)
+                y+=0.01;
         break; 
         case 80:
-            y-=0.005;
+            //p
+            if(y > -0.25)
+                y-=0.01;
         break;    
         case 81:
             theta++;
         break;
+        
         case 87:
             theta--;
         break;    
