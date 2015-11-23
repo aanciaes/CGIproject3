@@ -12,6 +12,7 @@ var renderMode = WIREFRAME;
 
 var projection;
 var modelView;
+var view;
 
 matrixStack = [];
 
@@ -21,7 +22,6 @@ var z = 0;
 
 var theta=0;
 var alpha=0;
-
 function pushMatrix()
 {
     matrixStack.push(mat4(modelView[0], modelView[1], modelView[2], modelView[3]));
@@ -60,8 +60,6 @@ function initialize() {
     gl.viewport(0,0,canvas.width, canvas.height);
     gl.enable(gl.DEPTH_TEST);
     
-    
-    
     program = initShaders(gl, "vertex-shader-2", "fragment-shader-2");
     
     cubeInit(gl);
@@ -70,7 +68,6 @@ function initialize() {
     
     setupProjection();
     setupView();
-    
 }
 
 function setupProjection() {
@@ -79,8 +76,8 @@ function setupProjection() {
 }
 
 function setupView() {
-    modelView = mat4();
-    multMatrix(lookAt([0,0,5], [0,0,0], [0,1,0]));
+    view = lookAt([0,0,5], [0,0,0], [0,1,0]);
+    modelView = mat4(view[0], view[1], view[2], view[3]);
 }
 
 function setMaterialColor(color) {
@@ -90,6 +87,14 @@ function setMaterialColor(color) {
 
 function sendMatrices()
 {
+    // Send the current model view matrix
+    var mView = gl.getUniformLocation(program, "mView");
+    gl.uniformMatrix4fv(mView, false, flatten(view));
+    
+    // Send the normals transformation matrix
+    var mViewVectors = gl.getUniformLocation(program, "mViewVectors");
+    gl.uniformMatrix4fv(mViewVectors, false, flatten(normalMatrix(view, false)));  
+
     // Send the current model view matrix
     var mModelView = gl.getUniformLocation(program, "mModelView");
     gl.uniformMatrix4fv(mModelView, false, flatten(modelView));
@@ -120,102 +125,112 @@ function draw_cylinder(color)
     cylinderDrawFilled(gl, program);
 }
 
-function draw_scene()
-{
-    
-    //var d = (new Date()).getTime();
-    var d = 1;
-    
-    
-    //estam
-    multTranslation([0,-2,0]);
-    //multRotX(radians(270));
-    
-    pushMatrix();
-        multTranslation([0,0,0.55]);
-        multScale([3.5,0.5,3.5]);
-        draw_cube([1,1,1]);
-    popMatrix();
-    
-    
-     pushMatrix();
-                multTranslation([0.2 + x,1,2.25]);
-                multScale([0.15,0.15,0.45]);
-                multRotX(90);
-                multRotZ(x);
-                draw_cylinder([2.0, 2.0, 0.0]);
-    popMatrix();
-    
-     pushMatrix();
-                multTranslation([-0.2 + x,1,2.25]);
-                multScale([0.15,0.15,0.45]);
-                multRotX(90);
-                multRotZ(x);
-                draw_cylinder([2.0, 2.0, 0.0]);
-    popMatrix();
-    
-    
-    
-    
-    
-    
-    
-    //base do carro
-    pushMatrix();
-        multTranslation([x, 1.1, 2.2]);
-    
-        multScale([0.7,0.15,0.5]);
 
-        draw_cube([1,0,0]);
-    popMatrix();
+
+function draw_scene(){
     
-    pushMatrix();
-                multTranslation([x,1.25,2.2]);
-                multScale([0.3,0.13,0.3]);
-                multRotY(theta);
-                draw_cylinder([0.0, 1.0, 0.0]);
-    popMatrix();
-    
-    
-    
-    pushMatrix();
-        multTranslation([x , 1.81, 2.2]);
-        multScale([0.15,1,0.15]);
-        multRotY((theta));
-        draw_cube([1.0, 0.0, 0.0]);
-    popMatrix();
-    
-    pushMatrix();
-            multTranslation([x,2.31,2.2]);
-            multScale([0.2,0.2,0.2]);
-            multRotY(theta);
-            multRotZ(alpha);
-            multRotX(-90);
-            draw_cylinder([0.0, 1.0, 0.0]);
-    popMatrix();
-    
-    pushMatrix();
-        multTranslation([x,2.31,2.2]);
-        multRotY(theta); 
-        multRotX(-90);
-        multRotY(alpha);
+		multTranslation([0,-2,0.2]);
+
+		pushMatrix();
+			multTranslation([0,0,0.55]);
+			multScale([3.5,0.5,3.5]);
+			draw_cube([1,1,1]);
+		popMatrix();
+	
+		pushMatrix();
+		multTranslation([x,0,2.25]);
+		//pushMatrix();
+			
+			pushMatrix();
+			multTranslation([0,1,0]);
+			
+				pushMatrix();
+					multTranslation([0.2,0,0]);
+					multScale([0.15,0.15,0.45]);
+					multRotX(90);
+
+					draw_cylinder([2.0, 2.0, 0.0]);
+
+				popMatrix();
+	
+				pushMatrix();
+					multTranslation([-0.2,0,0]);
+					multScale([0.15,0.15,0.45]);
+					multRotX(90);
+					draw_cylinder([2.0, 2.0, 0.0]);
+
+				popMatrix();
+			
+				pushMatrix();
+					multTranslation([0, 0.1, 0]);
+					
+					pushMatrix(); //Base do Carro
+						multTranslation([0, 0, -0.05]);
+						multScale([0.7,0.15,0.5]);
+						draw_cube([1,0,0]);
+					popMatrix();
+					
+					pushMatrix();
+						multTranslation([0,0.15,0]);
+						multRotY(theta);
+
+							pushMatrix(); //Base Astro principal
+								multScale([0.3,0.13,0.3]);
+								draw_cylinder([0.0, 1.0, 0.0]);
+							popMatrix();
+							
+							pushMatrix();
+								multTranslation([0 , 0.56, 0]);
+								
+									pushMatrix();//Astro Principal
+										multScale([0.15,1,0.15]);
+										draw_cube([1.0, 0.0, 0.0]);
+									popMatrix();
+									
+								pushMatrix();
+										multTranslation([0,0.5,0]);
+										
+											pushMatrix();//Cilindro grua
+												multScale([0.2,0.2,0.2]);
+												multRotZ(alpha);
+												multRotX(-90);
+												draw_cylinder([0.0, 1.0, 0.0]);
+											popMatrix();
+											pushMatrix();
+
+												multRotX(-90);
+												multRotY(alpha);
              
         
-    pushMatrix();
+												pushMatrix();
             
     
-            multScale([0.1,0.1,0.5]);    
-            multTranslation([0,0,-0.5]);
-            draw_cube([1.0, 0.0, 0.0]);
+													multScale([0.1,0.1,0.5]);    
+													multTranslation([0,0,-0.5]);
+													draw_cube([1.0, 0.0, 0.0]);
     
    
-    popMatrix();
+												popMatrix();
     
-            multTranslation([0,0,-0.5+y]);
-            multScale([0.05,0.05,0.5]);
-            draw_cube([1.0, 0.0, 0.0]);        
+													multTranslation([0,0,-0.5+y]);
+													multScale([0.05,0.05,0.5]);
+													draw_cube([1.0, 0.0, 0.0]);        
     
-    popMatrix();
+												popMatrix();
+											popMatrix();
+											
+								
+							popMatrix();
+						
+					popMatrix();
+					
+				popMatrix();
+			
+			popMatrix();
+		
+		popMatrix();
+	
+	
 }
 
 function render() {
